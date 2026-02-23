@@ -1,8 +1,10 @@
 package tasks;
 
+import common.Company;
 import common.Person;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -12,6 +14,9 @@ import java.util.List;
 public class Task3 {
 
   public static List<Person> sort(Collection<Person> persons) {
-    return new ArrayList<>(persons);
+    // Создал лист, чтобы я мог использовать на нем компаратор. В компараторе сначала по фамилии, потом по имени, потом по дате создания
+    List<Person> listPersons = new ArrayList<>(persons);
+    listPersons.sort(Comparator.comparing(Person::secondName).thenComparing(Person::firstName).thenComparing(Person::createdAt));
+    return listPersons;
   }
 }

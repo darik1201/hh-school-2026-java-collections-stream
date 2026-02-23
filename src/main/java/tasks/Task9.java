@@ -26,16 +26,18 @@ public class Task9 {
   // Костыль, эластик всегда выдает в топе "фальшивую персону".
   // Конвертируем начиная со второй
   public List<String> getNames(List<Person> persons) {
-    if (persons.size() == 0) {
+    // Можно использовать встроенную функцию isEmpty
+    if (persons.isEmpty()) {
       return Collections.emptyList();
     }
-    persons.remove(0);
-    return persons.stream().map(Person::firstName).collect(Collectors.toList());
+    // persons.remove(0); лучше не удалять из изначльного листа 1 элемент, так как мы так теряем его для других функций. Лучше в stream добавить skip(1)
+    return persons.stream().skip(1).map(Person::firstName).collect(Collectors.toList());
   }
 
   // Зачем-то нужны различные имена этих же персон (без учета фальшивой разумеется)
   public Set<String> getDifferentNames(List<Person> persons) {
-    return getNames(persons).stream().distinct().collect(Collectors.toSet());
+    //можн переписать под сет, который сам удалит дубликаты
+    return new HashSet<>(getNames(persons));
   }
 
   // Тут фронтовая логика, делаем за них работу - склеиваем ФИО
@@ -44,20 +46,20 @@ public class Task9 {
     if (person.secondName() != null) {
       result += person.secondName();
     }
-
     if (person.firstName() != null) {
       result += " " + person.firstName();
     }
-
-    if (person.secondName() != null) {
-      result += " " + person.secondName();
+    // Надо брать отчество, так как зачем двойное фио
+    if (person.middleName() != null) {
+      result += " " + person.middleName();
     }
     return result;
   }
 
   // словарь id персоны -> ее имя
   public Map<Integer, String> getPersonNames(Collection<Person> persons) {
-    Map<Integer, String> map = new HashMap<>(1);
+    //Иницилизировать мапу под 1 плохо так как она будет пересоздаваться и копироваться, лучше сразу под нужны размер
+    Map<Integer, String> map = new HashMap<>(persons.size());
     for (Person person : persons) {
       if (!map.containsKey(person.id())) {
         map.put(person.id(), convertPersonToString(person));
@@ -73,7 +75,13 @@ public class Task9 {
       for (Person person2 : persons2) {
         if (person1.equals(person2)) {
           has = true;
+          // Если нашли, то можно остановить перебор
+          break;
         }
+      }
+      // Второй цикл останавливается если уже нашли
+      if (has) {
+        break;
       }
     }
     return has;
@@ -81,14 +89,14 @@ public class Task9 {
 
   // Посчитать число четных чисел
   public long countEven(Stream<Integer> numbers) {
-    count = 0;
-    numbers.filter(num -> num % 2 == 0).forEach(num -> count++);
-    return count;
+    //  Можно просто использовать count без лишних переменных
+    return numbers.filter(num -> num % 2 == 0).count();
   }
 
   // Загадка - объясните почему assert тут всегда верен
   // Пояснение в чем соль - мы перетасовали числа, обернули в HashSet, а toString() у него вернул их в сортированном порядке
   void listVsSet() {
+    // Предположу что это из-за того что все числа идут по порядку и поэтому их хеши выстраиваются как сортированные
     List<Integer> integers = IntStream.rangeClosed(1, 10000).boxed().collect(Collectors.toList());
     List<Integer> snapshot = new ArrayList<>(integers);
     Collections.shuffle(integers);

@@ -23,6 +23,11 @@ public class Task5 {
   }
 
   public List<ApiPersonDto> convert(List<Person> persons, Map<Integer, Integer> personAreaIds) {
-    return new ArrayList<>();
+    // Сделал как в прошлой задаче, просто теперь конвертер также обращается к areaId. Сложность не изменилась
+    List<ApiPersonDto> convertedPersons = new ArrayList<>();
+    for (Person person : persons) {
+      convertedPersons.add(personConverter.convert(person, personAreaIds.get(person.id())));
+    }
+    return convertedPersons;
   }
 }

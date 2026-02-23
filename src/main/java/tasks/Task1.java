@@ -2,9 +2,8 @@ package tasks;
 
 import common.Person;
 import common.PersonService;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /*
 Задача 1
@@ -23,6 +22,18 @@ public class Task1 {
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = personService.findPersons(personIds);
-    return Collections.emptyList();
+    // Создаю мапу для того чтобы быстро доставать персону по айди
+    Map<Integer, Person> personByID = new HashMap<>();
+    // Прохожу по персонам и записываю это в мапу. По сложности это O(n), так как линейно проходимся
+    for (Person person : persons) {
+      personByID.put(person.id(), person);
+    }
+    // Тут я создаю список для ответа, где будут персоны в нужном порядке. Он тоже будет O(n), так как проходимся линейно, а в мапе поиск O(1)
+    List<Person> personsInOrder = new ArrayList<>();
+    for (Integer id : personIds) {
+      personsInOrder.add(personByID.get(id));
+    }
+    return personsInOrder;
+    // По памяти будет тоже O(n), так как создаю два массива размера N
   }
 }

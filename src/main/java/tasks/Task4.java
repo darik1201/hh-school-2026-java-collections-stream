@@ -3,6 +3,8 @@ package tasks;
 import common.ApiPersonDto;
 import common.Person;
 import common.PersonConverter;
+
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,12 @@ public class Task4 {
   }
 
   public List<ApiPersonDto> convert(List<Person> persons) {
-    return new ArrayList<>();
+    // Создаю лист, куда будут складывать конвертированных персон. Далее прохожусь по всем и добавлению в него конвертированную персону
+    // По времени будет O(n), так как линейно прохожусь. По памяти тоже O(n), так как создаю лист размером n
+    List<ApiPersonDto> convertedPersons = new ArrayList<>();
+    for (Person person : persons) {
+      convertedPersons.add(personConverter.convert(person));
+    }
+    return convertedPersons;
   }
 }
