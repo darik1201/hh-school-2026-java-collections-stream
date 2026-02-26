@@ -1,14 +1,8 @@
 package tasks;
 
 import common.Person;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,10 +20,7 @@ public class Task9 {
   // Костыль, эластик всегда выдает в топе "фальшивую персону".
   // Конвертируем начиная со второй
   public List<String> getNames(List<Person> persons) {
-    // Можно использовать встроенную функцию isEmpty
-    if (persons.isEmpty()) {
-      return Collections.emptyList();
-    }
+    // Понял, что проверка не нужна, так как не делаем больше удаления
     // persons.remove(0); лучше не удалять из изначльного листа 1 элемент, так как мы так теряем его для других функций. Лучше в stream добавить skip(1)
     return persons.stream().skip(1).map(Person::firstName).collect(Collectors.toList());
   }
@@ -42,18 +33,8 @@ public class Task9 {
 
   // Тут фронтовая логика, делаем за них работу - склеиваем ФИО
   public String convertPersonToString(Person person) {
-    String result = "";
-    if (person.secondName() != null) {
-      result += person.secondName();
-    }
-    if (person.firstName() != null) {
-      result += " " + person.firstName();
-    }
-    // Надо брать отчество, так как зачем двойное фио
-    if (person.middleName() != null) {
-      result += " " + person.middleName();
-    }
-    return result;
+    // Тут стрим по 3 частям ФИО и с помощью фильтра убираю пустые
+    return Stream.of(person.secondName(), person.firstName(), person.middleName()).filter(Objects::nonNull).collect(Collectors.joining(" "));
   }
 
   // словарь id персоны -> ее имя

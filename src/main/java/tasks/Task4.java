@@ -7,6 +7,7 @@ import common.PersonConverter;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 Задача 4
@@ -24,12 +25,8 @@ public class Task4 {
   }
 
   public List<ApiPersonDto> convert(List<Person> persons) {
-    // Создаю лист, куда будут складывать конвертированных персон. Далее прохожусь по всем и добавлению в него конвертированную персону
+    // Теперь конвертирую каждую персону через стрим, а потом собираю в список
     // По времени будет O(n), так как линейно прохожусь. По памяти тоже O(n), так как создаю лист размером n
-    List<ApiPersonDto> convertedPersons = new ArrayList<>();
-    for (Person person : persons) {
-      convertedPersons.add(personConverter.convert(person));
-    }
-    return convertedPersons;
+    return persons.stream().map(personConverter::convert).collect(Collectors.toList());
   }
 }

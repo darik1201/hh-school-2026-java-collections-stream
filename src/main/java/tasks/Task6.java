@@ -4,6 +4,7 @@ import common.Area;
 import common.Person;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /*
 Имеются
@@ -17,23 +18,11 @@ public class Task6 {
   public static Set<String> getPersonDescriptions(Collection<Person> persons,
                                                   Map<Integer, Set<Integer>> personAreaIds,
                                                   Collection<Area> areas) {
-    // Создаю мапу где будут area по id. Прохожу в цикле по всем areas и записываю в эту мапу
-    Map<Integer, Area> areaById = new HashMap<>();
-    for (Area area : areas) {
-      areaById.put(area.getId(), area);
-    }
-
-    Set<String> result = new HashSet<>();
-    // Прохожу по всем персонам, получаю его areaIDs и записываю строки формата Имя - area
-    for (Person person : persons) {
-      Set<Integer> areaIds = personAreaIds.get(person.id());
-      for (Integer areaId : areaIds) {
-        Area area = areaById.get(areaId);
-        result.add(person.firstName() + " - " + area.getName());
-      }
-    }
-    return result;
-    // Тут 2 цикла, поэтому сложность будет у 1 O(N of areas), у второго O(N of areas x N of persons), то есть итоговая сложность O(N of areas x N of persons)
+    // Собираю мапу через стрим для быстрого поиска
+    Map<Integer, Area> areaById = areas.stream().collect(Collectors.toMap(Area::getId, area -> area));
+    // Собираю через стрим так: через flatMap разделяю персон в поток строк, которые потом собираю в сет. Внутри flatmap работает так: собираю персон, ища их area по их айди и собираю в формате имя - регион
+    // По времени будет O(N of areas) + O(N of areas persons)
     //  А по памяти используется два массива размером N of areas и N of persons * N of his areas => O(N + N of persons * N of his areas)
+    return persons.stream().flatMap(person -> personAreaIds.getOrDefault(person.id(), Collections.emptySet()).stream().map(areaById::get).map(area -> person.firstName() + " - " + area.getName())).collect(Collectors.toSet());
   }
 }

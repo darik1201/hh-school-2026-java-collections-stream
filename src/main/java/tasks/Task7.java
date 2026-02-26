@@ -6,6 +6,7 @@ import common.Vacancy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 Из коллекции компаний необходимо получить всевозможные различные названия вакансий
@@ -13,15 +14,9 @@ import java.util.Set;
 public class Task7 {
 
   public static Set<String> vacancyNames(Collection<Company> companies) {
-    // Создаю set для вакансий, прохожу 2 циклами по всем компаниям и беру всех вакансии и записываю названия в сет
+    // Тут через стрим собираю в flatmap все вакансии каждой компании и потом собираю это в сет
     // Временная сложность O(N of companies + N of vacancies of this company)
     // По памяти O(N of vacancies of unique vacancies)
-    Set<String> vacancyTitlesByCompanies = new HashSet<>();
-    for (Company company : companies) {
-      for (Vacancy vacancy : company.getVacancies()) {
-        vacancyTitlesByCompanies.add(vacancy.getTitle());
-      }
-    }
-    return vacancyTitlesByCompanies;
+   return companies.stream().flatMap(company -> company.getVacancies().stream()).map(Vacancy::getTitle).collect(Collectors.toSet());
   }
 }

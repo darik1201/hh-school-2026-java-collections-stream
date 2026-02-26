@@ -29,14 +29,8 @@ public class Task8 {
     // Тут группирую резюме по айдиникам персоны
     Map<Integer, Set<Resume>> resumesById = resumes.stream().collect(Collectors.groupingBy(Resume::personId, Collectors.toSet()));
 
-    Set<PersonWithResumes> personWithResumes = new HashSet<>();
-    // Теперь пробегаю по персонам и если резюме, то записываю в ответ, иначе пустой сет
-    for (Person person : persons) {
-      Set<Resume> personResumes = resumesById.getOrDefault(person.id(), Set.of());
-      personWithResumes.add(new PersonWithResumes(person, personResumes));
-    }
-
-    return personWithResumes;
+    // Тут в стриме собираю сет, смотря есть ли у персоны резюме
+    return persons.stream().map(person -> new PersonWithResumes(person, resumesById.getOrDefault(person.id(), Set.of()))).collect(Collectors.toSet());
 
     // По временной сложности будет O(N of persons + N of Resumes)
     // По памяти O(N of persons + N of Resumes)
