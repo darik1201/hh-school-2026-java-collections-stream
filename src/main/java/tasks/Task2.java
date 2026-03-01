@@ -20,6 +20,9 @@ public class Task2 {
     // Сначала объединяю 2 потока, потом их сортирую по createdAt c лимитом, а потом собираю в лист
     // По времени O(n log n), так самое тут сортирововка, а она O(n log n)
     // По памяти O(n), так как надо хранить отсорированный массив. n - тут person1.size()+person2.size()
-    return Stream.concat(persons1.stream(), persons2.stream()).sorted(Comparator.comparing(Person::createdAt)).limit(limit).collect(Collectors.toList());
+    return Stream.concat(persons1.stream(), persons2.stream())
+        .sorted(Comparator.comparing(Person::createdAt))
+        .limit(limit)
+        .collect(Collectors.toList());
   }
 }

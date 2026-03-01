@@ -23,14 +23,25 @@ public class Task8 {
 
   public Set<PersonWithResumes> enrichPersonsWithResumes(Collection<Person> persons) {
     // Собираю айдишники персон через стрим в сет
-    Set<Integer> personIds = persons.stream().map(Person::id).collect(Collectors.toSet());
+    Set<Integer> personIds = persons.stream()
+        .map(Person::id)
+        .collect(Collectors.toSet());
     // Далее собираю все резюме по собранным айди
     Set<Resume> resumes = personService.findResumes(personIds);
     // Тут группирую резюме по айдиникам персоны
-    Map<Integer, Set<Resume>> resumesById = resumes.stream().collect(Collectors.groupingBy(Resume::personId, Collectors.toSet()));
+    Map<Integer, Set<Resume>> resumesById = resumes.stream()
+        .collect(Collectors.groupingBy(
+            Resume::personId,
+            Collectors.toSet())
+        );
 
     // Тут в стриме собираю сет, смотря есть ли у персоны резюме
-    return persons.stream().map(person -> new PersonWithResumes(person, resumesById.getOrDefault(person.id(), Set.of()))).collect(Collectors.toSet());
+    return persons.stream()
+        .map(person -> new PersonWithResumes(
+            person,
+            resumesById.getOrDefault(person.id(), Set.of())
+        ))
+        .collect(Collectors.toSet());
 
     // По временной сложности будет O(N of persons + N of Resumes)
     // По памяти O(N of persons + N of Resumes)

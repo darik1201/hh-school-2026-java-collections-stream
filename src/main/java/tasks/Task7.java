@@ -17,6 +17,9 @@ public class Task7 {
     // Тут через стрим собираю в flatmap все вакансии каждой компании и потом собираю это в сет
     // Временная сложность O(N of companies + N of vacancies of this company)
     // По памяти O(N of vacancies of unique vacancies)
-   return companies.stream().flatMap(company -> company.getVacancies().stream()).map(Vacancy::getTitle).collect(Collectors.toSet());
+   return companies.stream()
+       .flatMap(company -> company.getVacancies().stream())
+       .map(Vacancy::getTitle)
+       .collect(Collectors.toSet());
   }
 }

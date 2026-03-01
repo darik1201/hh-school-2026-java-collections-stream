@@ -24,9 +24,18 @@ public class Task1 {
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     // В этой версии собираю мапу из person по айди с помощью stream
-    Map<Integer, Person> personById = personService.findPersons(personIds).stream().collect(Collectors.toMap(Person::id, Function.identity()));
+    Map<Integer, Person> personById = personService
+        .findPersons(personIds)
+        .stream()
+        .collect(Collectors.toMap(
+                Person::id,
+                Function.identity()
+            )
+        );
     // Собираю все в список, проходя по исходному списку и получая персону из мапы
-    return personIds.stream().map(personById::get).collect(Collectors.toList());
+    return personIds.stream()
+        .map(personById::get)
+        .collect(Collectors.toList());
 
     // По сложности тут O(n), так как линейные проходы, а обращение к мапе это O(1). По памяти тоже O(n), так как просто создается массив размером N
   }

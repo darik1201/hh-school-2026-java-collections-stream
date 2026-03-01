@@ -25,6 +25,8 @@ public class Task5 {
 
   public List<ApiPersonDto> convert(List<Person> persons, Map<Integer, Integer> personAreaIds) {
     // Сделал как в прошлой задаче, просто теперь в конвертер в стриме передается через areaID. Сложность не изменилась
-    return persons.stream().map(person -> personConverter.convert(person, personAreaIds.get(person.id()))).collect(Collectors.toList());
+    return persons.stream()
+        .map(person -> personConverter.convert(person, personAreaIds.get(person.id())))
+        .collect(Collectors.toList());
   }
 }

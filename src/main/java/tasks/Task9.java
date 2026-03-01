@@ -22,7 +22,10 @@ public class Task9 {
   public List<String> getNames(List<Person> persons) {
     // Понял, что проверка не нужна, так как не делаем больше удаления
     // persons.remove(0); лучше не удалять из изначльного листа 1 элемент, так как мы так теряем его для других функций. Лучше в stream добавить skip(1)
-    return persons.stream().skip(1).map(Person::firstName).collect(Collectors.toList());
+    return persons.stream()
+        .skip(1)
+        .map(Person::firstName)
+        .collect(Collectors.toList());
   }
 
   // Зачем-то нужны различные имена этих же персон (без учета фальшивой разумеется)
@@ -34,44 +37,36 @@ public class Task9 {
   // Тут фронтовая логика, делаем за них работу - склеиваем ФИО
   public String convertPersonToString(Person person) {
     // Тут стрим по 3 частям ФИО и с помощью фильтра убираю пустые
-    return Stream.of(person.secondName(), person.firstName(), person.middleName()).filter(Objects::nonNull).collect(Collectors.joining(" "));
+    return Stream.of(person.secondName(), person.firstName(), person.middleName())
+        .filter(Objects::nonNull)
+        .collect(Collectors.joining(" "));
   }
 
   // словарь id персоны -> ее имя
   public Map<Integer, String> getPersonNames(Collection<Person> persons) {
-    //Иницилизировать мапу под 1 плохо так как она будет пересоздаваться и копироваться, лучше сразу под нужны размер
-    Map<Integer, String> map = new HashMap<>(persons.size());
-    for (Person person : persons) {
-      if (!map.containsKey(person.id())) {
-        map.put(person.id(), convertPersonToString(person));
-      }
-    }
-    return map;
+    return persons.stream()
+        .collect(Collectors.toMap(
+            Person::id,
+            this::convertPersonToString,
+            (existing, replace) -> existing,
+            () -> new HashMap<>(persons.size())
+        ));
   }
 
   // есть ли совпадающие в двух коллекциях персоны?
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
-    boolean has = false;
-    for (Person person1 : persons1) {
-      for (Person person2 : persons2) {
-        if (person1.equals(person2)) {
-          has = true;
-          // Если нашли, то можно остановить перебор
-          break;
-        }
-      }
-      // Второй цикл останавливается если уже нашли
-      if (has) {
-        break;
-      }
-    }
-    return has;
+    // Решил ускорить через HashSet, для начала записываю туда это O(N of persons1), далее прохожу по persons2 это O(N of persons2) => Итог по времени O(n+m)
+    // По памяти O(N of persons 1)
+    Set<Person> setOfPersons1 = new HashSet<>(persons1);
+    return persons2.stream()
+        .anyMatch(setOfPersons1::contains);
   }
 
   // Посчитать число четных чисел
   public long countEven(Stream<Integer> numbers) {
     //  Можно просто использовать count без лишних переменных
-    return numbers.filter(num -> num % 2 == 0).count();
+    return numbers.filter(num -> num % 2 == 0)
+        .count();
   }
 
   // Загадка - объясните почему assert тут всегда верен

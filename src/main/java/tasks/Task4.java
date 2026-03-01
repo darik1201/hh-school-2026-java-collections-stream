@@ -27,6 +27,8 @@ public class Task4 {
   public List<ApiPersonDto> convert(List<Person> persons) {
     // Теперь конвертирую каждую персону через стрим, а потом собираю в список
     // По времени будет O(n), так как линейно прохожусь. По памяти тоже O(n), так как создаю лист размером n
-    return persons.stream().map(personConverter::convert).collect(Collectors.toList());
+    return persons.stream()
+        .map(personConverter::convert)
+        .collect(Collectors.toList());
   }
 }
