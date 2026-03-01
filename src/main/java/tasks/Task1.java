@@ -2,9 +2,10 @@ package tasks;
 
 import common.Person;
 import common.PersonService;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /*
 Задача 1
@@ -22,7 +23,20 @@ public class Task1 {
   }
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
-    Set<Person> persons = personService.findPersons(personIds);
-    return Collections.emptyList();
+    // В этой версии собираю мапу из person по айди с помощью stream
+    Map<Integer, Person> personById = personService
+        .findPersons(personIds)
+        .stream()
+        .collect(Collectors.toMap(
+                Person::id,
+                Function.identity()
+            )
+        );
+    // Собираю все в список, проходя по исходному списку и получая персону из мапы
+    return personIds.stream()
+        .map(personById::get)
+        .collect(Collectors.toList());
+
+    // По сложности тут O(n), так как линейные проходы, а обращение к мапе это O(1). По памяти тоже O(n), так как просто создается массив размером N
   }
 }

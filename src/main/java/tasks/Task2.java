@@ -1,9 +1,10 @@
 package tasks;
 
 import common.Person;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
 Задача 2
@@ -16,6 +17,12 @@ public class Task2 {
   public static List<Person> combineAndSortWithLimit(Collection<Person> persons1,
                                                      Collection<Person> persons2,
                                                      int limit) {
-    return new ArrayList<>();
+    // Сначала объединяю 2 потока, потом их сортирую по createdAt c лимитом, а потом собираю в лист
+    // По времени O(n log n), так самое тут сортирововка, а она O(n log n)
+    // По памяти O(n), так как надо хранить отсорированный массив. n - тут person1.size()+person2.size()
+    return Stream.concat(persons1.stream(), persons2.stream())
+        .sorted(Comparator.comparing(Person::createdAt))
+        .limit(limit)
+        .collect(Collectors.toList());
   }
 }
